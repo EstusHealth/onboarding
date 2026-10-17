@@ -91,11 +91,12 @@ p { margin: 0; }
 .facts span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ember); }
 .field { display: flex; flex-direction: column; gap: 6px; max-width: 360px; }
 .field label { font-size: 13px; color: var(--ink-2); }
-.field input {
+.field input, .field textarea {
   background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px;
   font: 500 16px/1.2 var(--f-body); padding: 12px 14px;
 }
-.field input:focus { border-color: var(--ember); outline: none; }
+.field textarea { resize: vertical; min-height: 96px; line-height: 1.45; }
+.field input:focus, .field textarea:focus { border-color: var(--ember); outline: none; }
 .start-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 .offer { border-top: 1px solid var(--line); padding-top: 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; }
 .offer div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -214,6 +215,19 @@ p { margin: 0; }
 .share { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
 .share-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .share-row input { flex: 1 1 260px; min-width: 0; background: var(--bg); color: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; font: 400 13px/1.2 var(--f-mono); }
+.hollow-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+.hollow-col { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.hollow-q { font-weight: 600; }
+.inv, .reads { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.inv li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; font-size: 14px; color: var(--ink-2); }
+.inv small, .reads small { display: block; color: var(--muted); font-size: 13px; }
+.inv .mark { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 600 12px/1 var(--f-mono); border: 1px solid currentColor; }
+.inv .real .mark { color: var(--good); }
+.inv .decoy .mark { color: var(--gap); }
+.inv .missed .mark { color: var(--muted); }
+.reads li { font-size: 14px; color: var(--ink-2); }
+.reads b { color: var(--ink); font-weight: 600; }
+.quote { margin: 0; padding-left: 14px; border-left: 2px solid var(--ember); font-size: 17px; line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
 .res-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .foot { margin-top: 40px; font-size: 12px; color: var(--muted); }
 
@@ -223,6 +237,7 @@ p { margin: 0; }
 @media (max-width: 860px) {
   .intro, .res-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .res-grid .chart-wrap { position: relative; top: auto; }
+  .hollow-grid { grid-template-columns: minmax(0, 1fr); }
   .res-head { grid-template-columns: minmax(0, 1fr); }
   .score-big { text-align: left; }
 }
@@ -268,7 +283,8 @@ const DIMS = [
   { key: "scope",       label: "Advanced scope",    lo: 35, w: 0.6 },
   { key: "tech",        label: "Tech fluency",      lo: 60, w: 1 },
   { key: "gaming",      label: "Gaming",            lo: 30, w: 0.4 },
-  { key: "life",        label: "Life outside work", lo: 60, w: 1.2 }
+  { key: "life",        label: "Life outside work", lo: 60, w: 1.2 },
+  { key: "burnout",     label: "Burnout know-how",  lo: 60, w: 1.2 }
 ];
 
 const NOTES = {
@@ -309,11 +325,15 @@ const NOTES = {
   life: {
     good: "You protect your life outside work, which is the first thing burnout prevention looks at here.",
     gap: "Not much in your calendar is protected for you yet. Burnout prevention here starts with booked leave and protected time, so expect to be asked about it."
+  },
+  burnout: {
+    good: "You know the playbook: systems over willpower, one thing per time block, fewer commitments, and protecting what keeps you you.",
+    gap: "Burnout prevention here leans on James Clear (systems beat goals), Cal Newport (time blocking, do fewer things) and inversion. Worth reading up on before you start."
   }
 };
 
-const CHAPTERS = ["", "The Contract", "The Mentor", "The Craft", "The Toolkit", "The Co-op", "The Bonfire", "The Path"];
-const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII"];
+const CHAPTERS = ["", "The Contract", "The Mentor", "The Craft", "The Toolkit", "The Co-op", "The Bonfire", "Going Hollow", "The Path"];
+const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 const LEVELS = ["None", "Some", "Confident", "Advanced"];
 
 const Q = [
@@ -461,19 +481,64 @@ const Q = [
     { t: "Usually finished at night or on the weekend", s: { life: 15, tech: 30 } }
   ]},
 
-  /* VII. The Path: autonomy and growth */
-  { id: "manager", ch: 7, type: "single", prompt: "Your ideal manager…", options: [
+  /* VII. Going Hollow: burnout prevention (James Clear, Cal Newport, inversion) */
+  { id: "clear", ch: 7, type: "single", prompt: "Finish James Clear's line: “You do not rise to the level of your goals. You fall to the level of your…”", options: [
+    { t: "Systems", s: { burnout: 100 } },
+    { t: "Motivation", s: { burnout: 10 } },
+    { t: "Discipline", s: { burnout: 20 } },
+    { t: "Expectations", s: { burnout: 15 } }
+  ]},
+  { id: "habit", ch: 7, type: "single", prompt: "A new clinician keeps falling behind on notes. Which fix would James Clear back?", options: [
+    { t: "Try harder and be more disciplined about it", s: { burnout: 10 } },
+    { t: "Make it obvious and easy: notes auto-drafted from the transcript and finished in the gap after each session", s: { burnout: 100 } },
+    { t: "Set a big target of 100% compliance this quarter", s: { burnout: 35 } },
+    { t: "Save them all for a Friday catch-up block", s: { burnout: 15 } }
+  ]},
+  { id: "deepwork", ch: 7, type: "single", prompt: "Your week has 20 client hours, referral replies, an SOP to write and a CPD course. Which calendar would Cal Newport sign off on?", options: [
+    { t: "Squeeze things into gaps between sessions as they come up", s: { burnout: 10 } },
+    { t: "Time blocks with one thing per block, a separate block for email and admin, and a hard shutdown at the end of the day", s: { burnout: 100 } },
+    { t: "Inbox open all day so nothing slips", s: { burnout: 0 } },
+    { t: "One long to-do list, worked top to bottom", s: { burnout: 30 } }
+  ]},
+  { id: "slowprod", ch: 7, type: "single", prompt: "Which of these is one of the three principles of Cal Newport's Slow Productivity?", sub: "Liam runs a pull-based list: nothing new starts until something finishes.", options: [
+    { t: "Say yes to every opportunity early in your career", s: { burnout: 0 } },
+    { t: "Do fewer things", s: { burnout: 100 } },
+    { t: "Work in intense sprints, then recover", s: { burnout: 25 } },
+    { t: "Batch all your work into as few days as possible", s: { burnout: 20 } }
+  ]},
+  { id: "warning", ch: 7, type: "single", prompt: "What's the best early warning sign that a clinician is heading for burnout?", options: [
+    { t: "Their billable hours drop", s: { burnout: 20 } },
+    { t: "They've quietly stopped the things outside work that make them who they are", s: { burnout: 100 } },
+    { t: "Their score on a weekly wellbeing survey", s: { burnout: 40 } },
+    { t: "A client complains", s: { burnout: 15 } }
+  ]},
+  { id: "invert", ch: 7, type: "multi", prompt: "Inversion time. If Estus wanted to make your job as hard as possible, what would it do?", sub: "Charlie Munger's trick: work out how you'd fail, then avoid it. Pick everything you think would wear you down.", options: [
+    { t: "Book clients back to back with no breaks", s: { burnout: 15 }, tag: "real" },
+    { t: "Interrupt your day with calls, emails and ad hoc meetings", s: { burnout: 15 }, tag: "real" },
+    { t: "Set billable-hour KPIs and turn supervision into KPI check-ins", s: { burnout: 15 }, tag: "real" },
+    { t: "Add travel between clients", s: { burnout: 15 }, tag: "real" },
+    { t: "Let notes pile up until the weekend", s: { burnout: 15 }, tag: "real" },
+    { t: "Wreck your sleep", s: { burnout: 15 }, tag: "real" },
+    { t: "Assign any referral, whatever your interests", s: { burnout: 15 }, tag: "real" },
+    { t: "Make you book leave in advance", s: { burnout: -30 }, tag: "decoy" },
+    { t: "Put 30-minute gaps between sessions", s: { burnout: -30 }, tag: "decoy" },
+    { t: "Limit each calendar block to one thing", s: { burnout: -30 }, tag: "decoy" }
+  ]},
+  { id: "sabotage", ch: 7, type: "text", prompt: "Now flip it on yourself. What's the fastest way to sabotage you at work?", sub: "Liam's answer: wreck my sleep and fill my day with interruptions. Yours shows on your results.", placeholder: "e.g. Micromanage me and double-book my afternoons" },
+
+  /* VIII. The Path: autonomy and growth */
+  { id: "manager", ch: 8, type: "single", prompt: "Your ideal manager…", options: [
     { t: "Tells me exactly what to do and checks in often", s: { autonomy: 20, supervision: 55 } },
     { t: "Reviews my calendar and outcomes, but never micromanages my sessions", s: { autonomy: 100, supervision: 85 } },
     { t: "Stays hands-off unless I ask", s: { autonomy: 85, supervision: 60 } },
     { t: "Co-designs my growth plan with me", s: { autonomy: 90, supervision: 90 } }
   ]},
-  { id: "referrals", ch: 7, type: "single", prompt: "When it comes to referrals, you'd rather…", options: [
+  { id: "referrals", ch: 8, type: "single", prompt: "When it comes to referrals, you'd rather…", options: [
     { t: "Be assigned a steady caseload and take what comes", s: { autonomy: 25, portfolio: 25 } },
     { t: "Choose referrals that match where I want to grow", s: { autonomy: 100, portfolio: 75 } },
     { t: "Mix both: a base caseload plus the odd stretch case", s: { autonomy: 70, portfolio: 50 } }
   ]},
-  { id: "future", ch: 7, type: "single", prompt: "Five years from now, you'd like to be…", options: [
+  { id: "future", ch: 8, type: "single", prompt: "Five years from now, you'd like to be…", options: [
     { t: "A senior clinician in a stable team", s: { autonomy: 55, portfolio: 35 } },
     { t: "Leading or supervising others", s: { autonomy: 90, portfolio: 70 } },
     { t: "Running my own practice alongside work here", s: { autonomy: 100, portfolio: 100 } },
@@ -516,10 +581,13 @@ const CLASSES = [
     fn: (s, l) => (Math.max(l.fca, l.drive, l.homemods, l.at) / 3 * 100) * 0.7 + s.autonomy * 0.3 },
   { name: "The Systems Smith", sig: "S", line: "Automates the admin away.",
     blurb: "You love good systems. The practice runs on Google Workspace, AI-transcribed notes and online booking, and you'd help make it better.",
-    fn: (s) => s.tech * 0.6 + s.autonomy * 0.25 }
+    fn: (s) => s.tech * 0.6 + s.autonomy * 0.25 },
+  { name: "The Firekeeper", sig: "F", line: "Tends the flame. Never goes hollow.",
+    blurb: "You know how burnout happens and how to design around it: systems, time blocks, fewer commitments and a protected life. That's the culture here, and you'd help keep it.",
+    fn: (s) => s.burnout * 0.55 + s.life * 0.45 }
 ];
 
-const SAMPLE = { pay: 90, portfolio: 85, autonomy: 88, supervision: 80, experience: 60, scope: 45, tech: 78, gaming: 70, life: 82 };
+const SAMPLE = { pay: 90, portfolio: 85, autonomy: 88, supervision: 80, experience: 60, scope: 45, tech: 78, gaming: 70, life: 82, burnout: 86 };
 
 /* ---------- State ---------- */
 const app = document.getElementById("app");
@@ -530,7 +598,7 @@ function freshState() {
     view: "intro",
     idx: 0,
     name: "",
-    answers: Q.map(q => q.type === "single" ? null : q.type === "multi" ? [] : q.rows.map(() => 0)),
+    answers: Q.map(q => q.type === "single" ? null : q.type === "multi" ? [] : q.type === "text" ? "" : q.rows.map(() => 0)),
     shared: false
   };
 }
@@ -542,13 +610,14 @@ function scoreAnswers(answers) {
   Q.forEach((q, i) => {
     const a = answers[i];
     let c = {};
+    if (q.type === "text") return;
     if (q.type === "single") {
       if (a == null) return;
       c = Object.assign({}, q.options[a].s);
     } else if (q.type === "multi") {
       q.options.forEach(o => Object.keys(o.s).forEach(k => { c[k] = 0; }));
       a.forEach(j => { const s = q.options[j].s; for (const k in s) c[k] += s[k]; });
-      for (const k in c) c[k] = Math.min(100, c[k]);
+      for (const k in c) c[k] = Math.max(0, Math.min(100, c[k]));
     } else {
       // Scope rewards depth: your strongest area counts most.
       const lv = a.slice().sort((x, y) => y - x);
@@ -615,13 +684,17 @@ function encode(answers, name) {
     const a = answers[i];
     if (q.type === "single") s += a == null ? "z" : B36[a];
     else if (q.type === "multi") { let m = 0; a.forEach(j => { m |= 1 << j; }); s += m.toString(36).padStart(2, "0"); }
-    else s += a.join("");
+    else if (q.type === "matrix") s += a.join("");
   });
-  return "r1." + s + (name ? "." + b64e(name) : "");
+  const text = Q.map((q, i) => q.type === "text" ? answers[i] : null).filter(t => t !== null);
+  return "r2." + s + "." + (name ? b64e(name) : "") + "." + b64e(JSON.stringify(text));
 }
 function decode(h) {
   const parts = h.split(".");
-  if (parts[0] !== "r1" || !parts[1]) return null;
+  if (parts[0] !== "r2" || !parts[1]) return null;
+  let text = [];
+  try { if (parts[3]) text = JSON.parse(b64d(parts[3])); } catch (e) { text = []; }
+  if (!Array.isArray(text)) text = [];
   const s = parts[1];
   let p = 0;
   const answers = [];
@@ -636,6 +709,8 @@ function decode(h) {
       p += 2;
       if (isNaN(m)) return null;
       answers.push(q.options.map((_, j) => j).filter(j => m & (1 << j)));
+    } else if (q.type === "text") {
+      answers.push(String(text.shift() || "").slice(0, 160));
     } else {
       const arr = [];
       for (let k = 0; k < q.rows.length; k++) {
@@ -693,7 +768,7 @@ function radarSVG(scores, opts) {
       g += `<circle class="r-hit" data-i="${i}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="16" tabindex="0" role="img" aria-label="${esc(d.label)}: ${vals[i]} out of 100, ${STATUS_LABEL[status(d, vals[i])].slice(2)}"/>`;
     });
   }
-  return `<svg viewBox="-290 -190 580 375" role="img" aria-label="Alignment graph across ${N} areas">${g}</svg>`;
+  return `<svg viewBox="-290 -190 580 385" role="img" aria-label="Alignment graph across ${N} areas">${g}</svg>`;
 }
 
 function wireTooltips(wrap, scores) {
@@ -725,8 +800,8 @@ function renderIntro() {
     <div class="intro-copy">
       <p class="eyebrow">For OTs thinking about joining Estus Health</p>
       <h1>OT Alignment Quiz</h1>
-      <p class="lead">Twenty-one quick questions on pay, supervision, scope of practice, tech, gaming and the life you protect outside work. You finish with an alignment graph that shows where you and Estus line up, and what's worth a conversation.</p>
-      <div class="facts"><span>21 questions</span><span>About 4 minutes</span><span>Nothing is saved or sent</span></div>
+      <p class="lead">Twenty-eight quick questions on pay, supervision, scope of practice, tech, gaming, the life you protect outside work and how you'd keep yourself from burning out. You finish with an alignment graph that shows where you and Estus line up, and what's worth a conversation.</p>
+      <div class="facts"><span>28 questions</span><span>About 6 minutes</span><span>Nothing is saved or sent</span></div>
       <div class="field">
         <label for="cand-name">Your first name (optional, shown on your results)</label>
         <input id="cand-name" type="text" maxlength="40" autocomplete="given-name" placeholder="e.g. Sam" value="${esc(state.name)}">
@@ -776,6 +851,8 @@ function renderQuestion() {
         const on = q.type === "single" ? a === j : a.includes(j);
         return `<button type="button" class="opt" id="opt-${q.id}-${j}" data-j="${j}" aria-pressed="${on}"><span class="key">${j < 9 ? j + 1 : "0"}</span><span>${esc(o.t)}</span></button>`;
       }).join("") + `</div>`;
+  } else if (q.type === "text") {
+    body = `<div class="field" style="max-width:none"><label for="text-${q.id}">Your answer (optional)</label><textarea id="text-${q.id}" maxlength="160" rows="3" placeholder="${esc(q.placeholder || "")}">${esc(a)}</textarea></div>`;
   } else {
     body = `<div class="matrix">` + q.rows.map((r, k) => `
       <fieldset class="mrow"><legend>${esc(r.t)}</legend>
@@ -783,7 +860,7 @@ function renderQuestion() {
       </fieldset>`).join("") + `</div>`;
   }
   const isLast = i === Q.length - 1;
-  const nextLabel = isLast ? "See my alignment →" : q.type === "multi" && a.length === 0 ? "Skip →" : "Next →";
+  const nextLabel = isLast ? "See my alignment →" : (q.type === "multi" || q.type === "text") && a.length === 0 ? "Skip →" : "Next →";
   app.innerHTML = `
   <section class="quiz fade-in" aria-live="polite">
     <div class="qmeta">
@@ -807,9 +884,14 @@ function renderQuestion() {
   app.querySelectorAll(".seg input").forEach(inp => inp.addEventListener("change", () => {
     state.answers[i][Number(inp.dataset.k)] = Number(inp.value);
   }));
+  const ta = app.querySelector("textarea");
+  if (ta) ta.addEventListener("input", () => {
+    state.answers[i] = ta.value.trim();
+    document.getElementById("next-btn").textContent = isLast ? "See my alignment →" : state.answers[i] ? "Next →" : "Skip →";
+  });
   document.getElementById("back-btn").addEventListener("click", back);
   document.getElementById("next-btn").addEventListener("click", next);
-  const first = app.querySelector(".opt[aria-pressed='true'], .opt, .seg input:checked");
+  const first = app.querySelector(".opt[aria-pressed='true'], .opt, .seg input:checked, textarea");
   if (first) first.focus({ preventScroll: true });
 }
 
@@ -859,6 +941,11 @@ function renderResults() {
   const name = state.name;
   const verdict = total >= 85 ? "Strongly aligned" : total >= 70 ? "Well aligned" : total >= 55 ? "Partly aligned" : "Worth a deeper chat";
   const shareUrl = baseUrl() + "#" + encode(state.answers, name);
+  const iq = Q.findIndex(q => q.id === "invert");
+  const picked = state.answers[iq].map(j => Q[iq].options[j]);
+  const missed = Q[iq].options.filter((o, j) => o.tag === "real" && !state.answers[iq].includes(j));
+  const selfSabotage = state.answers[Q.findIndex(q => q.id === "sabotage")];
+  const whose = name ? esc(name) + "'s" : "Your";
 
   const axes = DIMS.map(d => {
     const v = scores[d.key], st = status(d, v);
@@ -900,6 +987,28 @@ function renderResults() {
       <div class="streams">${streams.map(s => `<div class="stream"><b>${esc(s.name)}</b><small>${esc(s.detail)}</small></div>`).join("")}</div>
     </div>
 
+    <div class="section hollow">
+      <h3>Going hollow: the inversion</h3>
+      <div class="hollow-grid">
+        <div class="hollow-col">
+          <p class="hollow-q">${whose} list of what would make this job hardest</p>
+          ${picked.length ? `<ul class="inv">${picked.map(o => `<li class="${o.tag}"><span class="mark" aria-hidden="true">${o.tag === "real" ? "✓" : "✕"}</span><span>${esc(o.t)}${o.tag === "decoy" ? `<small>This is one of Estus's protections against burnout, not a cause of it.</small>` : ""}</span></li>`).join("")}</ul>` : `<p class="muted">Nothing picked.</p>`}
+          ${missed.length ? `<p class="hollow-q" style="margin-top:14px">Also on the Estus list</p><ul class="inv">${missed.map(o => `<li class="missed"><span class="mark" aria-hidden="true">+</span><span>${esc(o.t)}</span></li>`).join("")}</ul>` : ""}
+        </div>
+        <div class="hollow-col">
+          <p class="hollow-q">The fastest way to sabotage ${name ? esc(name) : "you"}</p>
+          ${selfSabotage ? `<blockquote class="quote">“${esc(selfSabotage)}”</blockquote>` : `<p class="muted">Left blank. Worth thinking about before your chat.</p>`}
+          <p class="hollow-q" style="margin-top:18px">Reading the team leans on</p>
+          <ul class="reads">
+            <li><b>Atomic Habits</b> · James Clear<small>Systems over goals. Make the right thing obvious and easy.</small></li>
+            <li><b>Deep Work</b> and <b>Slow Productivity</b> · Cal Newport<small>Time blocking, one thing at a time, do fewer things.</small></li>
+            <li><b>Poor Charlie's Almanack</b> · Charlie Munger<small>Inversion: work out how you'd fail, then avoid it.</small></li>
+            <li><b>Stoicism and the Art of Happiness</b> · Donald Robertson<small>The Stoic roots of CBT.</small></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <div class="share">
       <h3>Share with the Estus team</h3>
       <p class="muted" style="font-size:14px">This link opens your graph exactly as you see it. Send it to Liam before your next chat.</p>
@@ -924,6 +1033,8 @@ function renderResults() {
     ...DIMS.map(d => `${d.label}: ${scores[d.key]} (${STATUS_LABEL[status(d, scores[d.key])].slice(2)})`),
     "",
     `Likely streams: ${streams.map(s => s.name).join(", ")}`,
+    `Inversion picks: ${picked.length ? picked.map(o => o.t + (o.tag === "decoy" ? " (actually a protection)" : "")).join("; ") : "none"}`,
+    `Fastest way to sabotage them: ${selfSabotage || "(left blank)"}`,
     `Graph: ${shareUrl}`
   ].join("\n");
   document.getElementById("copy-link").addEventListener("click", e => copy(shareUrl, e.currentTarget));
@@ -964,7 +1075,7 @@ function render() {
 /* ---------- Keyboard ---------- */
 document.addEventListener("keydown", e => {
   if (state.view !== "quiz" || e.metaKey || e.ctrlKey || e.altKey) return;
-  if (e.target && e.target.tagName === "INPUT" && e.target.type === "text") return;
+  if (e.target && (e.target.tagName === "TEXTAREA" || (e.target.tagName === "INPUT" && e.target.type === "text"))) return;
   if (/^[0-9]$/.test(e.key)) {
     const j = e.key === "0" ? 9 : Number(e.key) - 1;
     if (Q[state.idx].options) { e.preventDefault(); choose(j); }

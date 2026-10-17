@@ -1,10 +1,12 @@
 Estus Health onboarding
 
 index.html  OT Alignment Quiz for prospective occupational therapists.
-            21 questions across seven chapters (pay, supervision, experience and
-            scope, tech, gaming, life outside work, autonomy and growth), ending in
+            28 questions across eight chapters (pay, supervision, experience and
+            scope, tech, gaming, life outside work, burnout prevention via James
+            Clear / Cal Newport / inversion, autonomy and growth), ending in
             a radar "alignment graph" against the Estus fit zone, a class, likely
-            caseload streams, and a shareable results link.
+            caseload streams, the candidate's inversion answers, and a shareable
+            results link.
 
             Self-contained static page: open it in a browser or host it anywhere
             (GitHub Pages, Vercel). Nothing is stored or sent; results live in the
