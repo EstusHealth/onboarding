@@ -14,3 +14,13 @@ index.html  OT Alignment Quiz for prospective occupational therapists.
 
 Tuning: edit DIMS (fit-zone thresholds and weights), Q (questions and scores),
 NOTES, STREAMS and CLASSES at the top of the <script> in index.html.
+
+Deploying to Vercel
+  1. In Vercel: Add New > Project > import the estushealth/onboarding repo.
+  2. Framework preset: Other. Leave Build Command and Output Directory empty
+     (it's a static site served from the repo root). Deploy.
+  3. Optional: add a custom domain (e.g. quiz.estushealth.com.au) under
+     Settings > Domains.
+  vercel.json adds clean URLs and basic security headers; .vercelignore keeps
+  this readme off the live site. Share links are built from whatever URL the
+  page is served on, so they work on the custom domain automatically.
