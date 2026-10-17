@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estus OT Alignment Quiz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A quick quiz for occupational therapists thinking about joining Estus Health, ending in an alignment graph.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one warm-dark "bonfire" stage. Intro and results use a two-column grid, questions a single focused column. */
+:root {
+  color-scheme: dark;
+  --bg: #13100d;
+  --surface: #1c1814;
+  --surface-2: #251f19;
+  --line: #3a3128;
+  --ink: #efe6d8;
+  --ink-2: #c4b8a6;
+  --muted: #95897a;
+  --ember: #f29a4a;
+  --ember-deep: #c8622a;
+  --ember-soft: rgba(242, 154, 74, 0.13);
+  --on-ember: #1a120b;
+  --ash: #a3b4c8;
+  --ash-soft: rgba(163, 180, 200, 0.13);
+  --good: #8cc79c;
+  --close: #dcc480;
+  --gap: #e58a7c;
+  --f-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --f-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.55 var(--f-body);
+}
+[hidden] { display: none !important; }
+.glow {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(110% 55% at 50% 112%, rgba(200, 98, 42, 0.28), transparent 62%);
+}
+#embers { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.shell {
+  position: relative; z-index: 1;
+  max-width: 1060px; margin: 0 auto;
+  padding-block: 18px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 4px 32px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 600; letter-spacing: 0.1em; font-size: 15px; color: var(--ink); }
+.brand svg { width: 22px; height: 26px; flex: none; }
+.topbar .tag { font: 500 12px/1 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+h1 { font: 700 clamp(34px, 5.2vw, 54px)/1.06 var(--f-display); letter-spacing: 0.01em; }
+h2 { font: 600 clamp(22px, 3.2vw, 30px)/1.2 var(--f-body); letter-spacing: -0.01em; }
+h3 { font: 600 13px/1.2 var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+p { margin: 0; }
+.eyebrow { font: 600 12px/1.3 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ember); }
+.lead { font-size: 18px; color: var(--ink-2); max-width: 58ch; }
+.muted { color: var(--muted); }
+
+/* Buttons */
+.btn {
+  appearance: none; border: 1px solid transparent; border-radius: 999px; cursor: pointer;
+  font: 600 15px/1 var(--f-body); padding: 14px 22px; display: inline-flex; align-items: center; gap: 8px;
+  transition: transform .15s ease, background-color .15s ease, border-color .15s ease, opacity .15s ease;
+}
+.btn-primary { background: var(--ember); color: var(--on-ember); }
+.btn-primary:hover { background: #f6ab63; }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover { border-color: var(--muted); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+:focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; }
+
+/* Intro */
+.intro { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
+.intro-copy { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; font: 500 13px/1.4 var(--f-mono); color: var(--ink-2); }
+.facts span { display: inline-flex; align-items: center; gap: 8px; }
+.facts span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ember); }
+.field { display: flex; flex-direction: column; gap: 6px; max-width: 360px; }
+.field label { font-size: 13px; color: var(--ink-2); }
+.field input {
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px;
+  font: 500 16px/1.2 var(--f-body); padding: 12px 14px;
+}
+.field input:focus { border-color: var(--ember); outline: none; }
+.start-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.offer { border-top: 1px solid var(--line); padding-top: 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; }
+.offer div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.offer b { font: 600 15px/1.3 var(--f-body); }
+.offer small { font-size: 13px; color: var(--muted); }
+.sample { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px 14px 10px; }
+.sample .sample-tag { position: absolute; top: 14px; left: 16px; font: 600 11px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+/* Question */
+.quiz { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 26px; }
+.qmeta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.qmeta .count { font: 500 13px/1 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.chapter { font: 600 15px/1.2 var(--f-display); letter-spacing: .06em; color: var(--ember); }
+.chapter span { color: var(--muted); margin-right: 8px; }
+.progress { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--ember-deep), var(--ember)); transition: width .35s ease; }
+.qhead { display: flex; flex-direction: column; gap: 8px; }
+.qhead .sub { color: var(--ink-2); max-width: 60ch; }
+.options { display: grid; gap: 10px; }
+.opt {
+  appearance: none; width: 100%; text-align: left; cursor: pointer;
+  display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; align-items: center;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px 16px; font: 500 16px/1.4 var(--f-body);
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.opt:hover { border-color: var(--muted); }
+.opt[aria-pressed="true"] { border-color: var(--ember); background: var(--ember-soft); }
+.key {
+  width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center;
+  font: 600 12px/1 var(--f-mono); color: var(--muted); border: 1px solid var(--line); background: var(--bg);
+}
+.opt[aria-pressed="true"] .key { background: var(--ember); border-color: var(--ember); color: var(--on-ember); }
+.options.multi .key { border-radius: 6px; }
+.options.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.matrix { display: grid; gap: 14px; }
+.mrow { border: 0; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; align-items: center; }
+.mrow legend { padding: 0; font-weight: 500; float: left; }
+.seg { display: inline-grid; grid-template-columns: repeat(4, auto); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { padding: 9px 12px; font: 500 13px/1 var(--f-body); color: var(--ink-2); cursor: pointer; border-left: 1px solid var(--line); white-space: nowrap; }
+.seg label:first-of-type { border-left: 0; }
+.seg input:checked + label { background: var(--ember); color: var(--on-ember); }
+.seg input:focus-visible + label { outline: 2px solid var(--ember); outline-offset: -2px; }
+.qnav { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 6px; }
+.hint { font: 400 12px/1.4 var(--f-mono); color: var(--muted); }
+
+/* Results */
+.results { display: flex; flex-direction: column; gap: 36px; }
+.shared-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; color: var(--ink-2); }
+.res-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.res-head .title { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.score-big { text-align: right; }
+.score-big .num { font: 700 clamp(56px, 9vw, 88px)/0.9 var(--f-display); color: var(--ember); font-variant-numeric: tabular-nums; }
+.score-big .num small { font-size: .45em; color: var(--ink-2); margin-left: 2px; }
+.score-big .cap { font: 500 12px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+.class-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: start; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding-block: 20px; }
+.sigil { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--ember); color: var(--ember); font: 700 18px/1 var(--f-display); }
+.class-card .cname { font: 700 26px/1.1 var(--f-display); }
+.class-card .cline { color: var(--ember); font-weight: 600; margin-top: 4px; }
+.class-card .cblurb { color: var(--ink-2); margin-top: 8px; max-width: 64ch; }
+.res-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 36px; align-items: start; }
+.chart-wrap { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 12px 14px; }
+.res-grid .chart-wrap { position: sticky; top: calc(16px + env(safe-area-inset-top, 0px)); }
+.chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 6px 8px 0; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 18px; height: 10px; border-radius: 2px; display: inline-block; }
+.sw.you { background: var(--ember-soft); border: 2px solid var(--ember); }
+.sw.zone { background: var(--ash-soft); border: 1.5px dashed var(--ash); }
+.tip {
+  position: absolute; pointer-events: none; z-index: 3; min-width: 150px; max-width: 220px;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  font-size: 13px; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,.35); transform: translate(-50%, calc(-100% - 14px));
+}
+.tip b { display: block; font-weight: 600; }
+.tip .tv { font: 600 20px/1.2 var(--f-mono); color: var(--ink); }
+.tip .ts { color: var(--muted); }
+
+/* Radar marks */
+.r-grid { fill: none; stroke: var(--line); stroke-width: 1; }
+.r-spoke { stroke: var(--line); stroke-width: 1; }
+.r-ring-label { fill: var(--muted); font: 400 9px var(--f-mono); }
+.r-zone { fill: var(--ash-soft); fill-rule: evenodd; }
+.r-zone-edge { fill: none; stroke: var(--ash); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.r-you { fill: var(--ember-soft); stroke: var(--ember); stroke-width: 2; stroke-linejoin: round; }
+.r-dot { fill: var(--ember); stroke: var(--surface); stroke-width: 2; }
+.r-dot.is-gap { fill: var(--gap); }
+.r-hit { fill: transparent; cursor: pointer; }
+.r-hit:focus { outline: none; }
+.r-hit:focus-visible { stroke: var(--ember); stroke-width: 1.5; }
+.r-label { fill: var(--ink-2); font: 500 12px var(--f-body); }
+.r-val { fill: var(--ink); font: 600 11px var(--f-mono); }
+.r-shape { transform-box: view-box; transform-origin: 0px 0px; animation: grow .8s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes grow { from { transform: scale(.05); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.axes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.axis { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.axis-head { display: flex; align-items: center; gap: 10px; }
+.axis-name { font-weight: 600; flex: 1; min-width: 0; }
+.axis-val { font: 600 14px/1 var(--f-mono); font-variant-numeric: tabular-nums; width: 2.4em; text-align: right; }
+.chip { font: 600 11px/1 var(--f-mono); letter-spacing: .04em; padding: 4px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.chip.good { color: var(--good); }
+.chip.close { color: var(--close); }
+.chip.gap { color: var(--gap); }
+.track { position: relative; height: 8px; border-radius: 4px; background: var(--surface-2); }
+.track .zone { position: absolute; top: -3px; bottom: -3px; right: 0; border-left: 2px dashed var(--ash); background: rgba(163, 180, 200, 0.2); border-radius: 0 4px 4px 0; }
+.track .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; background: var(--ember); }
+.axis-note { font-size: 14px; color: var(--ink-2); }
+
+.streams { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.stream { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.stream b { font-weight: 600; }
+.stream small { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.section { display: flex; flex-direction: column; gap: 14px; }
+.share { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.share-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.share-row input { flex: 1 1 260px; min-width: 0; background: var(--bg); color: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; font: 400 13px/1.2 var(--f-mono); }
+.res-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.foot { margin-top: 40px; font-size: 12px; color: var(--muted); }
+
+.fade-in { animation: fade .35s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 860px) {
+  .intro, .res-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .res-grid .chart-wrap { position: relative; top: auto; }
+  .res-head { grid-template-columns: minmax(0, 1fr); }
+  .score-big { text-align: left; }
+}
+@media (max-width: 560px) {
+  .options.two { grid-template-columns: minmax(0, 1fr); }
+  .mrow { grid-template-columns: minmax(0, 1fr); }
+  .seg { width: 100%; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .seg label { text-align: center; padding: 10px 4px; }
+  .offer { grid-template-columns: minmax(0, 1fr); }
+  .topbar .tag { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .r-shape, .fade-in { animation: none; }
+  .progress i, .btn, .opt { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+<canvas id="embers" aria-hidden="true"></canvas>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 22 26" aria-hidden="true"><path d="M8 1h6v2h-1v5.2a8 8 0 1 1-4 0V3H8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.2 16.5a6.8 6.8 0 0 0 13.6 0z" fill="#f29a4a"/></svg>
+      ESTUS HEALTH
+    </div>
+    <span class="tag">OT alignment quiz</span>
+  </header>
+  <main id="app"></main>
+  <p class="foot">Estus Health · Telehealth occupational therapy across Australia. Results are a conversation starter for your chat with the team. They aren't an assessment.</p>
+</div>
+
+<script>
+"use strict";
+
+/* ---------- Model ---------- */
+const DIMS = [
+  { key: "pay",         label: "Pay model",         lo: 70, w: 1 },
+  { key: "portfolio",   label: "Portfolio income",  lo: 60, w: 1 },
+  { key: "autonomy",    label: "Autonomy & growth", lo: 70, w: 1.2 },
+  { key: "supervision", label: "Supervision style", lo: 65, w: 1 },
+  { key: "experience",  label: "Caseload match",    lo: 45, w: 0.8 },
+  { key: "scope",       label: "Advanced scope",    lo: 35, w: 0.6 },
+  { key: "tech",        label: "Tech fluency",      lo: 60, w: 1 },
+  { key: "gaming",      label: "Gaming",            lo: 30, w: 0.4 },
+  { key: "life",        label: "Life outside work", lo: 60, w: 1.2 }
+];
+
+const NOTES = {
+  pay: {
+    good: "The hourly model suits you: $90–100/hr plus super, insurance covered, paid for client time.",
+    gap: "You lean towards a salaried package. Estus mostly hires on casual contracts at $90–100/hr plus super, with insurance covered. Worth comparing once leave and admin time are counted."
+  },
+  portfolio: {
+    good: "You're open to mixing income streams, which is how most of the team works.",
+    gap: "You value one secure, full-time role. Most of the team mixes casual work here with contracting or a side business. Ask about the part-time option planned for 2027, which comes with an assigned caseload."
+  },
+  autonomy: {
+    good: "You want to steer your own growth. You'd choose your referrals, learning pathway and calendar.",
+    gap: "You prefer clear direction. Here you set your own calendar and choose referrals, and leadership reviews outcomes rather than sessions. Ask what onboarding support looks like."
+  },
+  supervision: {
+    good: "Your supervision style matches. Book internal supervision any time, and add an external specialist if you want one.",
+    gap: "You expect scheduled, paid supervision. Internal supervision is unlimited and free to book but isn't paid time. External supervisors can be arranged and are tax deductible."
+  },
+  experience: {
+    good: "Your client experience overlaps well with the current caseload.",
+    gap: "Your experience is earlier in your career or in different areas from the current caseload (ages 9–16, autism, mental health, school refusal). That's fine. Ask which referrals would suit you first."
+  },
+  scope: {
+    good: "You bring advanced scope the team can send specialised referrals to.",
+    gap: "Your advanced scope is still building. You'd pick your own learning pathway: ACT, CBT, MI, assessments or driving OT."
+  },
+  tech: {
+    good: "You'll be comfortable with telehealth, Google Workspace and automated notes from day one.",
+    gap: "The practice is telehealth-only and runs on Google Workspace, AI-transcribed notes and online booking. Expect a learning curve in your first few weeks."
+  },
+  gaming: {
+    good: "You can build rapport through co-op gaming, a big part of the 9–16 caseload.",
+    mid: "Some gaming is plenty to start. You'd begin with clients where games are a smaller part of sessions, and the team can show you the rest.",
+    midBelow: 60,
+    gap: "Gaming isn't required. You'd be matched with teens, young adults and adults working on mental health goals instead."
+  },
+  life: {
+    good: "You protect your life outside work, which is the first thing burnout prevention looks at here.",
+    gap: "Not much in your calendar is protected for you yet. Burnout prevention here starts with booked leave and protected time, so expect to be asked about it."
+  }
+};
+
+const CHAPTERS = ["", "The Contract", "The Mentor", "The Craft", "The Toolkit", "The Co-op", "The Bonfire", "The Path"];
+const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII"];
+const LEVELS = ["None", "Some", "Confident", "Advanced"];
+
+const Q = [
+  /* I. The Contract: pay and income model */
+  { id: "setup", ch: 1, type: "single", prompt: "Which pay setup sounds best to you?", options: [
+    { t: "A salary package with paid leave and a predictable payslip", s: { pay: 35, portfolio: 10 } },
+    { t: "A strong hourly rate ($90–100 + super) and I choose my own hours", s: { pay: 100, portfolio: 70 } },
+    { t: "That hourly base, plus contracting on the side to push my income higher", s: { pay: 100, portfolio: 100 } },
+    { t: "Fully self-employed, so I keep 100% of what I bill", s: { pay: 55, portfolio: 85 } }
+  ]},
+  { id: "income", ch: 1, type: "single", prompt: "What income are you aiming for in the next two years?", options: [
+    { t: "$75–90k, steady and predictable", s: { pay: 70, portfolio: 30 } },
+    { t: "$100–130k", s: { pay: 90, portfolio: 60 } },
+    { t: "$150–170k+, and I'll stack income streams to get there", s: { pay: 100, portfolio: 100 } },
+    { t: "Money isn't the driver. I'm here for the experience", s: { pay: 85, portfolio: 50 } }
+  ]},
+  { id: "hours", ch: 1, type: "single", prompt: "How many client hours a week do you want?", sub: "Client hours only. Notes, booking and invoicing are set up to run themselves.", options: [
+    { t: "5–10, alongside another role", s: { portfolio: 90, life: 90 } },
+    { t: "15–20, with real days off", s: { portfolio: 75, life: 95 } },
+    { t: "25–30, a full week", s: { portfolio: 50, life: 60 } },
+    { t: "As many as I can fit", s: { portfolio: 55, life: 25 } }
+  ]},
+  { id: "security", ch: 1, type: "single", prompt: "Pick the sentence that sounds most like you.", options: [
+    { t: "I want one secure, full-time job I can rely on", s: { portfolio: 10 } },
+    { t: "I want reliable base work, with room to add more later", s: { portfolio: 65 } },
+    { t: "I like mixing employment, contracting and maybe my own business", s: { portfolio: 100 } },
+    { t: "I already juggle a few roles and want this to complement them", s: { portfolio: 90 } }
+  ]},
+
+  /* II. The Mentor: supervision */
+  { id: "supmode", ch: 2, type: "single", prompt: "How do you like to get clinical supervision?", options: [
+    { t: "Scheduled weekly sessions that someone else organises", s: { supervision: 50, autonomy: 40 } },
+    { t: "On demand. I book in whenever I need it", s: { supervision: 100, autonomy: 80 } },
+    { t: "A specialist external supervisor matched to my pathway", s: { supervision: 90, autonomy: 75 } },
+    { t: "I mostly work it out myself and rarely ask", s: { supervision: 45, autonomy: 70 } }
+  ]},
+  { id: "suppay", ch: 2, type: "single", prompt: "Internal supervision here is unlimited and free to book, but it isn't paid time. How does that sit with you?", options: [
+    { t: "Great. I'd use it a lot", s: { supervision: 100 } },
+    { t: "Fine, as long as it's genuinely clinical and not KPI check-ins", s: { supervision: 95 } },
+    { t: "Fair enough. I'd mostly use an external supervisor anyway", s: { supervision: 80 } },
+    { t: "I'd expect supervision to be paid time", s: { supervision: 30 } }
+  ]},
+  { id: "learn", ch: 2, type: "multi", prompt: "What do you want to learn next?", sub: "Pick as many as you like.", options: [
+    { t: "Acceptance & commitment therapy (ACT)", s: { autonomy: 20 }, tag: "mh" },
+    { t: "CBT", s: { autonomy: 20 }, tag: "mh" },
+    { t: "Motivational interviewing", s: { autonomy: 20 }, tag: "mh" },
+    { t: "DBT skills", s: { autonomy: 20 }, tag: "mh" },
+    { t: "Functional capacity assessments", s: { autonomy: 20 }, tag: "fca" },
+    { t: "Driving OT", s: { autonomy: 20 }, tag: "drive" },
+    { t: "Home modifications", s: { autonomy: 20 }, tag: "homemods" },
+    { t: "Assistive technology", s: { autonomy: 20 }, tag: "at" },
+    { t: "Sensory profiles & environmental design", s: { autonomy: 20 }, tag: "study" },
+    { t: "Running my own practice", s: { autonomy: 25 }, tag: "biz" }
+  ]},
+
+  /* III. The Craft: experience and scope */
+  { id: "groups", ch: 3, type: "multi", prompt: "Which client groups have you worked with?", sub: "Placements count.", options: [
+    { t: "Children under 9", s: { experience: 5 } },
+    { t: "Ages 9–16", s: { experience: 30 }, tag: "teen" },
+    { t: "Young adults (17–25)", s: { experience: 25 }, tag: "ya" },
+    { t: "Adults", s: { experience: 15 } },
+    { t: "Older adults", s: { experience: 5 } },
+    { t: "Autistic clients", s: { experience: 25 }, tag: "autism" },
+    { t: "Psychosocial / mental health", s: { experience: 25 }, tag: "mh" },
+    { t: "School refusal & education", s: { experience: 20 }, tag: "study" },
+    { t: "Vocational rehab / return to work", s: { experience: 20 }, tag: "voc" }
+  ]},
+  { id: "years", ch: 3, type: "single", prompt: "How long since you graduated?", options: [
+    { t: "Still studying, or just graduated", s: { experience: 25 } },
+    { t: "1–2 years", s: { experience: 55 } },
+    { t: "3–5 years", s: { experience: 80 } },
+    { t: "6+ years", s: { experience: 100 } }
+  ]},
+  { id: "scope", ch: 3, type: "matrix", dim: "scope", prompt: "How advanced is your scope of practice in each area?", sub: "Be honest. Growing scope is part of the job here.", rows: [
+    { t: "Mental health therapy (ACT, CBT, MI, DBT)", key: "mh" },
+    { t: "Functional capacity assessments", key: "fca" },
+    { t: "Driving OT", key: "drive" },
+    { t: "Home modifications", key: "homemods" },
+    { t: "Assistive technology", key: "at" },
+    { t: "Sensory profiles & environmental design", key: "study" }
+  ]},
+
+  /* IV. The Toolkit: technology */
+  { id: "tools", ch: 4, type: "multi", prompt: "Which of these do you use comfortably?", options: [
+    { t: "Google Workspace (Docs, Sheets, Calendar)", s: { tech: 20 } },
+    { t: "Telehealth video sessions", s: { tech: 20 } },
+    { t: "AI transcription or note tools", s: { tech: 20 } },
+    { t: "Practice software with online booking (Cliniko, Splose, etc.)", s: { tech: 20 } },
+    { t: "Discord", s: { tech: 15 } },
+    { t: "Automations (Zapier, Make, Apps Script)", s: { tech: 25 } },
+    { t: "Mic, camera and lighting setup", s: { tech: 10 } }
+  ]},
+  { id: "newsys", ch: 4, type: "single", prompt: "A new system lands in the team. You…", options: [
+    { t: "Read the docs and have it running the same day", s: { tech: 95, autonomy: 85 } },
+    { t: "Pick it up once someone shows me", s: { tech: 70, autonomy: 55 } },
+    { t: "Would rather stick with what I know", s: { tech: 25, autonomy: 35 } },
+    { t: "Am already working out what else it can automate", s: { tech: 100, autonomy: 100 } }
+  ]},
+  { id: "telehealth", ch: 4, type: "single", prompt: "The practice is almost entirely telehealth. That sounds…", options: [
+    { t: "Ideal. I'm done driving between clients", s: { tech: 90 } },
+    { t: "Good, with the odd in-person group", s: { tech: 75 } },
+    { t: "Like something I'd need to get used to", s: { tech: 45 } },
+    { t: "Hard. I'd miss face-to-face work", s: { tech: 20 } }
+  ]},
+
+  /* V. The Co-op: gaming */
+  { id: "gamer", ch: 5, type: "single", prompt: "How would you describe your gaming experience?", sub: "There's no wrong answer. Clients get matched to what you bring.", options: [
+    { t: "None, and I'm fine with that", s: { gaming: 5 } },
+    { t: "Casual or mobile games", s: { gaming: 40 } },
+    { t: "I play regularly", s: { gaming: 75 } },
+    { t: "Deep. I could run a Minecraft server or lead a co-op run", s: { gaming: 100 } }
+  ]},
+  { id: "games", ch: 5, type: "multi", prompt: "Which could you jump into with a client today?", options: [
+    { t: "Minecraft", s: { gaming: 20 } },
+    { t: "Roblox", s: { gaming: 20 } },
+    { t: "Fortnite", s: { gaming: 15 } },
+    { t: "Minecraft Dungeons or other co-op dungeon crawlers", s: { gaming: 15 } },
+    { t: "Pokémon", s: { gaming: 10 } },
+    { t: "Elden Ring / Dark Souls", s: { gaming: 15 } },
+    { t: "Tabletop RPGs (D&D)", s: { gaming: 15 } },
+    { t: "Discord communities", s: { gaming: 15 } }
+  ]},
+
+  /* VI. The Bonfire: life outside work */
+  { id: "protect", ch: 6, type: "multi", prompt: "What do you protect in your calendar?", sub: "The things that keep you you.", options: [
+    { t: "Fitness or sport", s: { life: 25 } },
+    { t: "Family & caring", s: { life: 25 } },
+    { t: "Travel", s: { life: 25 } },
+    { t: "A creative hobby", s: { life: 25 } },
+    { t: "Gaming", s: { life: 25 } },
+    { t: "A side business", s: { life: 25 } },
+    { t: "Study", s: { life: 20 } },
+    { t: "Podcasts & audiobooks", s: { life: 20 } },
+    { t: "Community or faith", s: { life: 25 } },
+    { t: "Nothing yet, honestly", s: { life: 10 }, exclusive: true }
+  ]},
+  { id: "leave", ch: 6, type: "single", prompt: "Do you have leave booked right now?", sub: "It's on our pre-flight checklist. Saying no is easier when something's on the calendar.", options: [
+    { t: "Yes, and I'm counting down", s: { life: 100 } },
+    { t: "I'm planning it", s: { life: 65 } },
+    { t: "Not really. I rarely take leave", s: { life: 20 } }
+  ]},
+  { id: "notes", ch: 6, type: "single", prompt: "It's the end of the day. Your notes are…", options: [
+    { t: "Done before I log off. Every day.", s: { life: 100, tech: 75 } },
+    { t: "Done by the end of the week", s: { life: 50, tech: 50 } },
+    { t: "Usually finished at night or on the weekend", s: { life: 15, tech: 30 } }
+  ]},
+
+  /* VII. The Path: autonomy and growth */
+  { id: "manager", ch: 7, type: "single", prompt: "Your ideal manager…", options: [
+    { t: "Tells me exactly what to do and checks in often", s: { autonomy: 20, supervision: 55 } },
+    { t: "Reviews my calendar and outcomes, but never micromanages my sessions", s: { autonomy: 100, supervision: 85 } },
+    { t: "Stays hands-off unless I ask", s: { autonomy: 85, supervision: 60 } },
+    { t: "Co-designs my growth plan with me", s: { autonomy: 90, supervision: 90 } }
+  ]},
+  { id: "referrals", ch: 7, type: "single", prompt: "When it comes to referrals, you'd rather…", options: [
+    { t: "Be assigned a steady caseload and take what comes", s: { autonomy: 25, portfolio: 25 } },
+    { t: "Choose referrals that match where I want to grow", s: { autonomy: 100, portfolio: 75 } },
+    { t: "Mix both: a base caseload plus the odd stretch case", s: { autonomy: 70, portfolio: 50 } }
+  ]},
+  { id: "future", ch: 7, type: "single", prompt: "Five years from now, you'd like to be…", options: [
+    { t: "A senior clinician in a stable team", s: { autonomy: 55, portfolio: 35 } },
+    { t: "Leading or supervising others", s: { autonomy: 90, portfolio: 70 } },
+    { t: "Running my own practice alongside work here", s: { autonomy: 100, portfolio: 100 } },
+    { t: "A go-to specialist in driving, assessments or mental health", s: { autonomy: 85, portfolio: 75 } }
+  ]}
+];
+
+const STREAMS = [
+  { name: "Gaming-based ongoing therapy", detail: "Ages 9–16: autism, routines, school refusal. Co-op sessions in Minecraft, Roblox and more.",
+    test: (s, t) => s.gaming >= 60 || (s.gaming >= 40 && (t.has("groups:teen") || t.has("groups:autism"))) },
+  { name: "Teen & young adult mental health", detail: "Recovery-focused work with ACT, CBT, MI and DBT skills for anxiety, low mood and cognitive overwhelm.",
+    test: (s, t, l) => l.mh >= 1 || t.has("groups:mh") || t.has("groups:ya") || t.has("learn:mh") },
+  { name: "Functional capacity assessments", detail: "Interview-based assessments, with partner contracting if you want extra income.",
+    test: (s, t, l) => l.fca >= 1 || t.has("learn:fca") },
+  { name: "Driving OT", detail: "Driving on the Spectrum is launching, with training available.",
+    test: (s, t, l) => l.drive >= 1 || t.has("learn:drive") },
+  { name: "Study on the Spectrum", detail: "Launching 2027: sensory profiles, study routines, transitions and environmental design.",
+    test: (s, t, l) => l.study >= 1 || t.has("groups:study") || t.has("learn:study") },
+  { name: "Home mods & assistive tech", detail: "Specialised assessments for clients who need changes to their environment or equipment.",
+    test: (s, t, l) => l.homemods >= 1 || l.at >= 1 || t.has("learn:homemods") || t.has("learn:at") },
+  { name: "Education & employment pathways", detail: "A voc rehab or case-management background suits clients rebuilding work and study routines.",
+    test: (s, t) => t.has("groups:voc") }
+];
+
+const CLASSES = [
+  { name: "The Pathfinder", sig: "P", line: "Entrepreneurial and self-directed.",
+    blurb: "You want to set your own calendar, stack income streams and maybe build a practice of your own. The casual-plus-contracting model was designed for people like you.",
+    fn: (s) => s.portfolio * 0.55 + s.autonomy * 0.45 },
+  { name: "The Anchor", sig: "A", line: "Steady, boundaried, life first.",
+    blurb: "You want reliable work that fits around the people and things you care about. You set your availability once, clients book around it, and your week stays predictable.",
+    fn: (s) => s.life * 0.6 + (100 - s.portfolio) * 0.4 },
+  { name: "The Lorekeeper", sig: "L", line: "Clinically curious, always learning.",
+    blurb: "You want depth: supervision, a clear learning pathway and mental health skills like ACT, CBT and MI. Unlimited internal supervision and external specialists are on hand.",
+    fn: (s, l) => s.supervision * 0.45 + (l.mh / 3 * 100) * 0.35 + s.autonomy * 0.2 },
+  { name: "The Co-op Healer", sig: "C", line: "Builds rapport through play.",
+    blurb: "You speak the language of the 9–16 caseload. Co-op gaming is where rapport starts here, and you'd hit the ground running.",
+    fn: (s) => s.gaming * 0.65 + s.experience * 0.35 },
+  { name: "The Assessor", sig: "As", line: "Precise, specialised, in demand.",
+    blurb: "Assessment work is your edge: functional capacity, driving, home mods or AT. Driving OT is launching and partner contracting is available.",
+    fn: (s, l) => (Math.max(l.fca, l.drive, l.homemods, l.at) / 3 * 100) * 0.7 + s.autonomy * 0.3 },
+  { name: "The Systems Smith", sig: "S", line: "Automates the admin away.",
+    blurb: "You love good systems. The practice runs on Google Workspace, AI-transcribed notes and online booking, and you'd help make it better.",
+    fn: (s) => s.tech * 0.6 + s.autonomy * 0.25 }
+];
+
+const SAMPLE = { pay: 90, portfolio: 85, autonomy: 88, supervision: 80, experience: 60, scope: 45, tech: 78, gaming: 70, life: 82 };
+
+/* ---------- State ---------- */
+const app = document.getElementById("app");
+let state = freshState();
+
+function freshState() {
+  return {
+    view: "intro",
+    idx: 0,
+    name: "",
+    answers: Q.map(q => q.type === "single" ? null : q.type === "multi" ? [] : q.rows.map(() => 0)),
+    shared: false
+  };
+}
+
+/* ---------- Scoring ---------- */
+function scoreAnswers(answers) {
+  const sums = {}, counts = {};
+  DIMS.forEach(d => { sums[d.key] = 0; counts[d.key] = 0; });
+  Q.forEach((q, i) => {
+    const a = answers[i];
+    let c = {};
+    if (q.type === "single") {
+      if (a == null) return;
+      c = Object.assign({}, q.options[a].s);
+    } else if (q.type === "multi") {
+      q.options.forEach(o => Object.keys(o.s).forEach(k => { c[k] = 0; }));
+      a.forEach(j => { const s = q.options[j].s; for (const k in s) c[k] += s[k]; });
+      for (const k in c) c[k] = Math.min(100, c[k]);
+    } else {
+      // Scope rewards depth: your strongest area counts most.
+      const lv = a.slice().sort((x, y) => y - x);
+      c[q.dim] = Math.round((lv[0] * 0.5 + lv[1] * 0.3 + lv[2] * 0.2) / 3 * 100);
+    }
+    for (const k in c) { sums[k] += c[k]; counts[k]++; }
+  });
+  const out = {};
+  DIMS.forEach(d => { out[d.key] = counts[d.key] ? Math.round(sums[d.key] / counts[d.key]) : 0; });
+  return out;
+}
+
+function profile(answers) {
+  const tags = new Set();
+  const lvl = {};
+  Q.forEach((q, i) => {
+    const a = answers[i];
+    if (q.type === "multi") a.forEach(j => { const t = q.options[j].tag; if (t) tags.add(q.id + ":" + t); });
+    if (q.type === "matrix") q.rows.forEach((r, k) => { lvl[r.key] = a[k]; });
+  });
+  return { tags, lvl };
+}
+
+function status(d, v) {
+  if (v >= d.lo) return "good";
+  if (v >= d.lo - 15) return "close";
+  return "gap";
+}
+const STATUS_LABEL = { good: "✓ In the zone", close: "≈ Close", gap: "! Talk it through" };
+
+function noteFor(d, v, st) {
+  if (st !== "good") return NOTES[d.key].gap;
+  if (NOTES[d.key].mid && v < NOTES[d.key].midBelow) return NOTES[d.key].mid;
+  return NOTES[d.key].good;
+}
+
+function overall(scores) {
+  let num = 0, den = 0;
+  // Reaching the fit zone earns 80% of an axis; the rest comes from how far into it you go.
+  DIMS.forEach(d => {
+    const v = scores[d.key];
+    const fit = v >= d.lo ? 0.8 + 0.2 * (v - d.lo) / (100 - d.lo) : 0.8 * v / d.lo;
+    num += d.w * fit; den += d.w;
+  });
+  return Math.round(num / den * 100);
+}
+
+/* ---------- Share encoding (hash uses only letters, digits, . _ -) ---------- */
+const B36 = "0123456789abcdefghijklmnopqrstuvwxyz";
+function b64e(str) {
+  let bin = "";
+  new TextEncoder().encode(str).forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64d(s) {
+  s = s.replace(/-/g, "+").replace(/_/g, "/");
+  while (s.length % 4) s += "=";
+  const bin = atob(s);
+  return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+}
+function encode(answers, name) {
+  let s = "";
+  Q.forEach((q, i) => {
+    const a = answers[i];
+    if (q.type === "single") s += a == null ? "z" : B36[a];
+    else if (q.type === "multi") { let m = 0; a.forEach(j => { m |= 1 << j; }); s += m.toString(36).padStart(2, "0"); }
+    else s += a.join("");
+  });
+  return "r1." + s + (name ? "." + b64e(name) : "");
+}
+function decode(h) {
+  const parts = h.split(".");
+  if (parts[0] !== "r1" || !parts[1]) return null;
+  const s = parts[1];
+  let p = 0;
+  const answers = [];
+  for (const q of Q) {
+    if (q.type === "single") {
+      const ch = s[p++];
+      if (ch === undefined) return null;
+      const v = B36.indexOf(ch);
+      answers.push(ch === "z" || v < 0 || v >= q.options.length ? null : v);
+    } else if (q.type === "multi") {
+      const m = parseInt(s.substr(p, 2), 36);
+      p += 2;
+      if (isNaN(m)) return null;
+      answers.push(q.options.map((_, j) => j).filter(j => m & (1 << j)));
+    } else {
+      const arr = [];
+      for (let k = 0; k < q.rows.length; k++) {
+        const v = Number(s[p++]);
+        if (!(v >= 0 && v <= 3)) return null;
+        arr.push(v);
+      }
+      answers.push(arr);
+    }
+  }
+  let name = "";
+  try { if (parts[2]) name = b64d(parts[2]).slice(0, 40); } catch (e) { name = ""; }
+  return { answers, name };
+}
+
+/* ---------- Helpers ---------- */
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function baseUrl() { return location.href.split("#")[0]; }
+function setHash(h) {
+  try { history.replaceState(null, "", h ? "#" + h : baseUrl()); } catch (e) { /* frame may refuse */ }
+}
+
+/* ---------- Radar chart ---------- */
+function radarSVG(scores, opts) {
+  const N = DIMS.length, R = 140, interactive = !!(opts && opts.interactive);
+  const ang = i => -Math.PI / 2 + i * 2 * Math.PI / N;
+  const pt = (i, v) => [Math.cos(ang(i)) * R * v / 100, Math.sin(ang(i)) * R * v / 100];
+  const poly = vals => vals.map((v, i) => pt(i, v).map(n => n.toFixed(1)).join(",")).join(" ");
+  const pathOf = vals => "M" + vals.map((v, i) => pt(i, v).map(n => n.toFixed(1)).join(" ")).join("L") + "Z";
+  const vals = DIMS.map(d => scores[d.key]);
+  const los = DIMS.map(d => d.lo);
+  let g = "";
+  [25, 50, 75, 100].forEach(r => { g += `<polygon class="r-grid" points="${poly(DIMS.map(() => r))}"/>`; });
+  DIMS.forEach((d, i) => { const [x, y] = pt(i, 100); g += `<line class="r-spoke" x1="0" y1="0" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`; });
+  [50].forEach(r => { g += `<text class="r-ring-label" x="4" y="${(-R * r / 100 + 10).toFixed(1)}">${r}</text>`; });
+  g += `<path class="r-zone" d="${pathOf(DIMS.map(() => 100))} ${pathOf(los)}"/>`;
+  g += `<polygon class="r-zone-edge" points="${poly(los)}"/>`;
+  let shape = `<polygon class="r-you" points="${poly(vals)}"/>`;
+  DIMS.forEach((d, i) => {
+    const [x, y] = pt(i, Math.max(vals[i], 2));
+    shape += `<circle class="r-dot${status(d, vals[i]) === "gap" ? " is-gap" : ""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5"/>`;
+  });
+  g += `<g class="r-shape">${shape}</g>`;
+  DIMS.forEach((d, i) => {
+    const a = ang(i), lx = Math.cos(a) * (R + 16), ly = Math.sin(a) * (R + 16);
+    const anchor = lx > 8 ? "start" : lx < -8 ? "end" : "middle";
+    const base = ly < -R * 0.85 ? -18 : ly > R * 0.85 ? 12 : -2;
+    g += `<text class="r-label" text-anchor="${anchor}" x="${lx.toFixed(1)}" y="${(ly + base).toFixed(1)}">${esc(d.label)}<tspan class="r-val" x="${lx.toFixed(1)}" dy="14">${vals[i]}</tspan></text>`;
+  });
+  if (interactive) {
+    DIMS.forEach((d, i) => {
+      const [x, y] = pt(i, Math.max(vals[i], 2));
+      g += `<circle class="r-hit" data-i="${i}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="16" tabindex="0" role="img" aria-label="${esc(d.label)}: ${vals[i]} out of 100, ${STATUS_LABEL[status(d, vals[i])].slice(2)}"/>`;
+    });
+  }
+  return `<svg viewBox="-290 -190 580 375" role="img" aria-label="Alignment graph across ${N} areas">${g}</svg>`;
+}
+
+function wireTooltips(wrap, scores) {
+  const tip = wrap.querySelector(".tip");
+  const show = el => {
+    const i = Number(el.dataset.i), d = DIMS[i], v = scores[d.key], st = status(d, v);
+    tip.innerHTML = `<b>${esc(d.label)}</b><span class="tv">${v}</span> <span class="ts">/ 100</span><br><span class="chip ${st}">${STATUS_LABEL[st]}</span><br><span class="ts">Fit zone starts at ${d.lo}</span>`;
+    const wr = wrap.getBoundingClientRect(), r = el.getBoundingClientRect();
+    let x = r.left + r.width / 2 - wr.left;
+    x = Math.max(90, Math.min(wr.width - 90, x));
+    tip.style.left = x + "px";
+    tip.style.top = (r.top + r.height / 2 - wr.top) + "px";
+    tip.hidden = false;
+  };
+  const hide = () => { tip.hidden = true; };
+  wrap.querySelectorAll(".r-hit").forEach(el => {
+    el.addEventListener("pointerenter", () => show(el));
+    el.addEventListener("pointerleave", hide);
+    el.addEventListener("focus", () => show(el));
+    el.addEventListener("blur", hide);
+    el.addEventListener("click", () => show(el));
+  });
+}
+
+/* ---------- Views ---------- */
+function renderIntro() {
+  app.innerHTML = `
+  <section class="intro fade-in">
+    <div class="intro-copy">
+      <p class="eyebrow">For OTs thinking about joining Estus Health</p>
+      <h1>OT Alignment Quiz</h1>
+      <p class="lead">Twenty-one quick questions on pay, supervision, scope of practice, tech, gaming and the life you protect outside work. You finish with an alignment graph that shows where you and Estus line up, and what's worth a conversation.</p>
+      <div class="facts"><span>21 questions</span><span>About 4 minutes</span><span>Nothing is saved or sent</span></div>
+      <div class="field">
+        <label for="cand-name">Your first name (optional, shown on your results)</label>
+        <input id="cand-name" type="text" maxlength="40" autocomplete="given-name" placeholder="e.g. Sam" value="${esc(state.name)}">
+      </div>
+      <div class="start-row">
+        <button class="btn btn-primary" id="start-btn" type="button">Start the quiz →</button>
+        <span class="hint">Tip: number keys pick answers</span>
+      </div>
+      <div class="offer" aria-label="How Estus works">
+        <div><b>$90–100/hr + super</b><small>Casual contract, insurance covered</small></div>
+        <div><b>Telehealth, Australia-wide</b><small>No driving between clients</small></div>
+        <div><b>Unlimited supervision</b><small>Internal, plus top external supervisors</small></div>
+        <div><b>You own your calendar</b><small>Clients book into the hours you set</small></div>
+      </div>
+    </div>
+    <figure class="sample" style="margin:0">
+      <span class="sample-tag">Example result</span>
+      <div class="chart-wrap" style="border:0;padding:8px 0 0;background:transparent">${radarSVG(SAMPLE, {})}</div>
+      <div class="legend"><span><i class="sw you"></i>Candidate</span><span><i class="sw zone"></i>Estus fit zone</span></div>
+    </figure>
+  </section>`;
+  const input = document.getElementById("cand-name");
+  input.addEventListener("input", () => { state.name = input.value.trim(); });
+  input.addEventListener("keydown", e => { if (e.key === "Enter") start(); });
+  document.getElementById("start-btn").addEventListener("click", start);
+}
+
+function start() {
+  state.view = "quiz";
+  state.idx = 0;
+  render();
+}
+
+function answered(i) {
+  const q = Q[i], a = state.answers[i];
+  return q.type === "single" ? a != null : true;
+}
+
+function renderQuestion() {
+  const i = state.idx, q = Q[i], a = state.answers[i];
+  const pct = Math.round(i / Q.length * 100);
+  let body = "";
+  if (q.type === "single" || q.type === "multi") {
+    const two = q.options.length > 6 ? " two" : "";
+    body = `<div class="options${q.type === "multi" ? " multi" : ""}${two}" role="group" aria-label="Answers">` +
+      q.options.map((o, j) => {
+        const on = q.type === "single" ? a === j : a.includes(j);
+        return `<button type="button" class="opt" id="opt-${q.id}-${j}" data-j="${j}" aria-pressed="${on}"><span class="key">${j < 9 ? j + 1 : "0"}</span><span>${esc(o.t)}</span></button>`;
+      }).join("") + `</div>`;
+  } else {
+    body = `<div class="matrix">` + q.rows.map((r, k) => `
+      <fieldset class="mrow"><legend>${esc(r.t)}</legend>
+        <div class="seg">${LEVELS.map((L, v) => `<input type="radio" id="m-${r.key}-${v}" name="m-${r.key}" value="${v}" data-k="${k}"${a[k] === v ? " checked" : ""}><label for="m-${r.key}-${v}">${L}</label>`).join("")}</div>
+      </fieldset>`).join("") + `</div>`;
+  }
+  const isLast = i === Q.length - 1;
+  const nextLabel = isLast ? "See my alignment →" : q.type === "multi" && a.length === 0 ? "Skip →" : "Next →";
+  app.innerHTML = `
+  <section class="quiz fade-in" aria-live="polite">
+    <div class="qmeta">
+      <p class="chapter"><span>Chapter ${ROMAN[q.ch]}</span>${CHAPTERS[q.ch]}</p>
+      <p class="count">${i + 1} / ${Q.length}</p>
+    </div>
+    <div class="progress" aria-hidden="true"><i style="width:${pct}%"></i></div>
+    <div class="qhead">
+      <h2 id="qtitle">${esc(q.prompt)}</h2>
+      ${q.sub ? `<p class="sub">${esc(q.sub)}</p>` : q.type === "multi" ? `<p class="sub">Pick all that apply.</p>` : ""}
+    </div>
+    ${body}
+    <div class="qnav">
+      <button type="button" class="btn btn-ghost" id="back-btn">← Back</button>
+      <button type="button" class="btn btn-primary" id="next-btn"${answered(i) ? "" : " disabled"}>${nextLabel}</button>
+    </div>
+  </section>`;
+  requestAnimationFrame(() => { const bar = app.querySelector(".progress i"); if (bar) bar.style.width = Math.round((i + (answered(i) ? 1 : 0)) / Q.length * 100) + "%"; });
+
+  app.querySelectorAll(".opt").forEach(btn => btn.addEventListener("click", () => choose(Number(btn.dataset.j))));
+  app.querySelectorAll(".seg input").forEach(inp => inp.addEventListener("change", () => {
+    state.answers[i][Number(inp.dataset.k)] = Number(inp.value);
+  }));
+  document.getElementById("back-btn").addEventListener("click", back);
+  document.getElementById("next-btn").addEventListener("click", next);
+  const first = app.querySelector(".opt[aria-pressed='true'], .opt, .seg input:checked");
+  if (first) first.focus({ preventScroll: true });
+}
+
+let advanceTimer = null;
+function choose(j) {
+  const i = state.idx, q = Q[i];
+  if (!q.options || j >= q.options.length) return;
+  if (q.type === "single") {
+    state.answers[i] = j;
+    app.querySelectorAll(".opt").forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.j) === j)));
+    document.getElementById("next-btn").disabled = false;
+    clearTimeout(advanceTimer);
+    advanceTimer = setTimeout(next, 280);
+  } else {
+    let sel = state.answers[i].slice();
+    const opt = q.options[j];
+    if (sel.includes(j)) sel = sel.filter(x => x !== j);
+    else if (opt.exclusive) sel = [j];
+    else sel = sel.filter(x => !q.options[x].exclusive).concat(j);
+    state.answers[i] = sel;
+    app.querySelectorAll(".opt").forEach(b => b.setAttribute("aria-pressed", String(sel.includes(Number(b.dataset.j)))));
+    document.getElementById("next-btn").textContent = i === Q.length - 1 ? "See my alignment →" : sel.length ? "Next →" : "Skip →";
+  }
+}
+
+function next() {
+  clearTimeout(advanceTimer);
+  if (!answered(state.idx)) return;
+  if (state.idx < Q.length - 1) { state.idx++; render(); }
+  else { state.view = "results"; setHash(encode(state.answers, state.name)); render(); }
+  window.scrollTo({ top: 0 });
+}
+function back() {
+  clearTimeout(advanceTimer);
+  if (state.idx === 0) { state.view = "intro"; }
+  else state.idx--;
+  render();
+}
+
+function renderResults() {
+  const scores = scoreAnswers(state.answers);
+  const { tags, lvl } = profile(state.answers);
+  const total = overall(scores);
+  const cls = CLASSES.map(c => ({ c, v: c.fn(scores, lvl) })).sort((x, y) => y.v - x.v)[0].c;
+  let streams = STREAMS.filter(s => s.test(scores, tags, lvl));
+  if (!streams.length) streams = [STREAMS[1]];
+  const name = state.name;
+  const verdict = total >= 85 ? "Strongly aligned" : total >= 70 ? "Well aligned" : total >= 55 ? "Partly aligned" : "Worth a deeper chat";
+  const shareUrl = baseUrl() + "#" + encode(state.answers, name);
+
+  const axes = DIMS.map(d => {
+    const v = scores[d.key], st = status(d, v);
+    return `<li class="axis">
+      <div class="axis-head"><span class="axis-name">${esc(d.label)}</span><span class="chip ${st}">${STATUS_LABEL[st]}</span><span class="axis-val">${v}</span></div>
+      <div class="track" aria-hidden="true"><div class="zone" style="left:${d.lo}%"></div><div class="fill" style="width:${Math.max(v, 1)}%"></div></div>
+      <p class="axis-note">${esc(noteFor(d, v, st))}</p>
+    </li>`;
+  }).join("");
+
+  app.innerHTML = `
+  <section class="results fade-in">
+    ${state.shared ? `<div class="shared-banner"><span>You're viewing ${name ? esc(name) + "'s" : "a candidate's"} shared results.</span><button type="button" class="btn btn-ghost" id="own-btn">Take the quiz yourself</button></div>` : ""}
+    <div class="res-head">
+      <div class="title">
+        <p class="eyebrow">Your alignment graph</p>
+        <h1>${name ? esc(name) + ", you're " : "You're "}${verdict.toLowerCase()}</h1>
+        <p class="lead">Each spoke is one part of how Estus works. The dashed band is the fit zone. Points inside it line up; points outside are worth talking through, not deal-breakers.</p>
+      </div>
+      <div class="score-big"><div class="num">${total}<small>%</small></div><div class="cap">Overall alignment</div></div>
+    </div>
+
+    <div class="class-card">
+      <div class="sigil" aria-hidden="true">${cls.sig}</div>
+      <div><p class="muted" style="font-size:13px">Your class</p><p class="cname">${cls.name}</p><p class="cline">${cls.line}</p><p class="cblurb">${cls.blurb}</p></div>
+    </div>
+
+    <div class="res-grid">
+      <figure class="chart-wrap" style="margin:0">
+        ${radarSVG(scores, { interactive: true })}
+        <div class="legend"><span><i class="sw you"></i>${name ? esc(name) : "You"}</span><span><i class="sw zone"></i>Estus fit zone</span></div>
+        <div class="tip" hidden></div>
+      </figure>
+      <ul class="axes" aria-label="Scores by area">${axes}</ul>
+    </div>
+
+    <div class="section">
+      <h3>Where you'd likely start</h3>
+      <div class="streams">${streams.map(s => `<div class="stream"><b>${esc(s.name)}</b><small>${esc(s.detail)}</small></div>`).join("")}</div>
+    </div>
+
+    <div class="share">
+      <h3>Share with the Estus team</h3>
+      <p class="muted" style="font-size:14px">This link opens your graph exactly as you see it. Send it to Liam before your next chat.</p>
+      <div class="share-row">
+        <input id="share-link" type="text" readonly value="${esc(shareUrl)}" aria-label="Results link">
+        <button type="button" class="btn btn-primary" id="copy-link">Copy link</button>
+        <button type="button" class="btn btn-ghost" id="copy-summary">Copy summary</button>
+      </div>
+    </div>
+
+    <div class="res-actions">
+      <button type="button" class="btn btn-ghost" id="retake-btn">Retake the quiz</button>
+    </div>
+  </section>`;
+
+  wireTooltips(app.querySelector(".chart-wrap"), scores);
+  const summary = [
+    `Estus OT alignment${name ? " · " + name : ""}`,
+    `Overall: ${total}% (${verdict})`,
+    `Class: ${cls.name}: ${cls.line}`,
+    "",
+    ...DIMS.map(d => `${d.label}: ${scores[d.key]} (${STATUS_LABEL[status(d, scores[d.key])].slice(2)})`),
+    "",
+    `Likely streams: ${streams.map(s => s.name).join(", ")}`,
+    `Graph: ${shareUrl}`
+  ].join("\n");
+  document.getElementById("copy-link").addEventListener("click", e => copy(shareUrl, e.currentTarget));
+  document.getElementById("copy-summary").addEventListener("click", e => copy(summary, e.currentTarget));
+  document.getElementById("retake-btn").addEventListener("click", reset);
+  const own = document.getElementById("own-btn");
+  if (own) own.addEventListener("click", reset);
+}
+
+function copy(text, btn) {
+  const label = btn.textContent;
+  const done = msg => { btn.textContent = msg; setTimeout(() => { btn.textContent = label; }, 1600); };
+  try {
+    navigator.clipboard.writeText(text).then(() => done("Copied"), () => fallback());
+  } catch (e) { fallback(); }
+  function fallback() {
+    const field = document.getElementById("share-link");
+    if (text !== field.value) field.value = text;
+    field.focus();
+    field.select();
+    done("Press Ctrl/⌘+C");
+  }
+}
+
+function reset() {
+  state = freshState();
+  setHash("");
+  render();
+  window.scrollTo({ top: 0 });
+}
+
+function render() {
+  if (state.view === "intro") renderIntro();
+  else if (state.view === "quiz") renderQuestion();
+  else renderResults();
+}
+
+/* ---------- Keyboard ---------- */
+document.addEventListener("keydown", e => {
+  if (state.view !== "quiz" || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target && e.target.tagName === "INPUT" && e.target.type === "text") return;
+  if (/^[0-9]$/.test(e.key)) {
+    const j = e.key === "0" ? 9 : Number(e.key) - 1;
+    if (Q[state.idx].options) { e.preventDefault(); choose(j); }
+  } else if (e.key === "Enter" && !(e.target && e.target.tagName === "BUTTON")) {
+    e.preventDefault(); next();
+  } else if (e.key === "ArrowLeft" && !(e.target && e.target.type === "radio")) {
+    back();
+  }
+});
+
+/* ---------- Embers ---------- */
+function embers() {
+  const c = document.getElementById("embers");
+  const ctx = c.getContext && c.getContext("2d");
+  if (!ctx) return;
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w = 0, h = 0;
+  const P = [];
+  function size() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    w = c.clientWidth; h = c.clientHeight;
+    c.width = w * dpr; c.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function spawn(anywhere) {
+    return { x: Math.random() * w, y: anywhere ? Math.random() * h : h + 8, r: 0.6 + Math.random() * 1.7,
+      vy: 0.15 + Math.random() * 0.45, vx: (Math.random() - 0.5) * 0.2, a: 0.2 + Math.random() * 0.5, ph: Math.random() * 6.28 };
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    for (const p of P) {
+      const alpha = p.a * Math.min(1, (p.y / h) * 1.3);
+      ctx.fillStyle = "rgba(242,154,74," + alpha.toFixed(3) + ")";
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  size();
+  window.addEventListener("resize", size);
+  const n = Math.round(Math.max(18, Math.min(48, w / 26)));
+  for (let i = 0; i < n; i++) P.push(spawn(true));
+  if (reduce) { draw(); return; }
+  (function loop(t) {
+    for (const p of P) {
+      p.y -= p.vy;
+      p.x += p.vx + Math.sin(t / 1000 + p.ph) * 0.15;
+      if (p.y < -8) Object.assign(p, spawn(false));
+    }
+    draw();
+    requestAnimationFrame(loop);
+  })(0);
+}
+
+/* ---------- Boot ---------- */
+function boot(saved) {
+  const h = (location.hash || "").slice(1);
+  const fromLink = h ? decode(h) : null;
+  if (fromLink) {
+    state = freshState();
+    state.answers = fromLink.answers;
+    state.name = fromLink.name;
+    state.view = "results";
+    state.shared = true;
+  } else if (saved && saved.state && Array.isArray(saved.state.answers) && saved.state.answers.length === Q.length) {
+    state = saved.state;
+  }
+  render();
+  embers();
+}
+if (window.claude && window.claude.hot) {
+  try { window.claude.hot.snapshot(() => ({ state })); } catch (e) { /* optional */ }
+}
+if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(boot);
+else boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>
+</body>
+</html>
